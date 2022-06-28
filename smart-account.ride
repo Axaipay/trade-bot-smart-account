@@ -1,0 +1,13 @@
+{-# STDLIB_VERSION 5 #-}
+{-# CONTENT_TYPE EXPRESSION #-}
+{-# SCRIPT_TYPE ACCOUNT #-}
+
+let addressReceive = Address(base58'3P3EkN6VfFir5Yz96Q2TcEBTTrQQj6qvn4B')
+let axai = base58'A4tvKLB66QMmSJPXJgiajNnrtSjvqAapxTqhLzJbBNFX' #axai asset id
+let usdn = base58'DG2xFkPdDwKUoBkzGAhQtLpSGzfXLiCYPEzeKH2Ad24p'
+
+match (tx) {
+    case e: ExchangeTransaction => if(e.buyOrder.orderType == Buy) then if(e.buyOrder.assetPair.amountAsset == axai && e.buyOrder.assetPair.priceAsset == usdn) then sigVerify(e.bodyBytes, e.proofs[0], e.senderPublicKey) else false else if(e.sellOrder.assetPair.amountAsset == axai && e.sellOrder.assetPair.priceAsset == usdn) then sigVerify(e.bodyBytes, e.proofs[0], e.senderPublicKey) else false
+    case tt: TransferTransaction => tt.recipient == addressReceive
+    case _ => sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)
+}
