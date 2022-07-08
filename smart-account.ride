@@ -5,10 +5,16 @@
 let addressReceive = Address(base58'3P3EkN6VfFir5Yz96Q2TcEBTTrQQj6qvn4B')
 let axai = base58'A4tvKLB66QMmSJPXJgiajNnrtSjvqAapxTqhLzJbBNFX' #axai asset id
 let usdn = base58'DG2xFkPdDwKUoBkzGAhQtLpSGzfXLiCYPEzeKH2Ad24p'
+let usdt = base58'AtR3c6X6q21VGFdtu73PspcCw1pERV4csVS97LHZBbSF'
 
 match (tx) {
-    case order: Order => if(order.orderType == Buy) then if(order.assetPair.amountAsset == axai && order.assetPair.priceAsset == usdn) then sigVerify(order.bodyBytes, order.proofs[0], order.senderPublicKey) else false else if(order.assetPair.amountAsset == axai && order.assetPair.priceAsset == usdn) then sigVerify(order.bodyBytes, order.proofs[0], order.senderPublicKey) else false
+    case order: Order => if(order.orderType == Buy) then if(order.assetPair.amountAsset == axai && (order.assetPair.priceAsset == usdn || order.assetPair.priceAsset == unit || order.assetPair.priceAsset == usdt)) then sigVerify(order.bodyBytes, order.proofs[0], order.senderPublicKey) else false else if(order.assetPair.amountAsset == axai && (order.assetPair.priceAsset == usdn || order.assetPair.priceAsset == unit || order.assetPair.priceAsset == usdt)) then sigVerify(order.bodyBytes, order.proofs[0], order.senderPublicKey) else false
     case tt: TransferTransaction => tt.recipient == addressReceive
-    case e: ExchangeTransaction => if(e.buyOrder.orderType == Buy) then if(e.buyOrder.assetPair.amountAsset == axai && e.buyOrder.assetPair.priceAsset == usdn) then sigVerify(e.bodyBytes, e.proofs[0], e.senderPublicKey) else false else if(e.sellOrder.assetPair.amountAsset == axai && e.sellOrder.assetPair.priceAsset == usdn) then sigVerify(e.bodyBytes, e.proofs[0], e.senderPublicKey) else false
+    case e: ExchangeTransaction => if(e.buyOrder.orderType == Buy) then if(e.buyOrder.assetPair.amountAsset == axai && (e.buyOrder.assetPair.priceAsset == usdn || e.buyOrder.assetPair.priceAsset == unit || e.buyOrder.assetPair.priceAsset == usdt)) then sigVerify(e.bodyBytes, e.proofs[0], e.senderPublicKey) else false else if(e.sellOrder.assetPair.amountAsset == axai && (e.sellOrder.assetPair.priceAsset == usdn || e.sellOrder.assetPair.priceAsset == unit || e.sellOrder.assetPair.priceAsset == usdt)) then sigVerify(e.bodyBytes, e.proofs[0], e.senderPublicKey) else false
     case _ => sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)
 }
+
+
+
+
+
